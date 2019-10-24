@@ -1,0 +1,31 @@
+version: '3.6'
+services:
+  postgres:
+    image: postgres
+    restart: always
+    volumes:
+    - db_data:/var/lib/postgresql/data
+  graphql-engine:
+    image: hasura/graphql-engine:v1.0.0-beta.8
+    ports:
+    - "8080:8080"
+    depends_on:
+    - "postgres"
+    restart: always
+    environment:
+      HASURA_GRAPHQL_DATABASE_URL: postgres://postgres:@postgres:5432/postgres
+      HASURA_GRAPHQL_ENABLE_CONSOLE: "true" # set to "false" to disable console
+      HASURA_GRAPHQL_ENABLED_LOG_TYPES: startup, http-log, webhook-log, websocket-log, query-log
+      ## uncomment next line to set an admin secret
+      HASURA_GRAPHQL_ADMIN_SECRET: secret
+      HASURA_GRAPHQL_JWT_SECRET: '{"type":"HS256", "key": "IWri29qyRTq3VWyRnaSdOjiZJPNCeiynXe2hchPRH-7pZOpgwSHlCIt_2fYjBb3Pb6Ep8UF0y36qnpJHBScge-OkdQdBvw7LVFcqkB7enrOrUS7Xx71L41-r_TEtAiYfxrWGoeiugBUfxqG50TpR2qGBBZXzkwXXdHCvdTNw2INranwpnuq3KErCR1Ql8M-2DwSmPfB1Q1NMz9Kakmjb4FWPNCIa7UN_m9bYrU72lSuFZDMDPju_Dyvyx3_emT9VfaDjuScYQGhpz0CSty-aRvFGz3WF9FRwkTFsscI3K6XlZiiKrsZ3bH1LokL8Crr7hhnwrw7Moq-J_3yc_cFsCQ"}'
+  auth-server:
+    image: tanmaig/workshop-auth:v1
+    environment:
+      ENCRYPTION_KEY: "IWri29qyRTq3VWyRnaSdOjiZJPNCeiynXe2hchPRH-7pZOpgwSHlCIt_2fYjBb3Pb6Ep8UF0y36qnpJHBScge-OkdQdBvw7LVFcqkB7enrOrUS7Xx71L41-r_TEtAiYfxrWGoeiugBUfxqG50TpR2qGBBZXzkwXXdHCvdTNw2INranwpnuq3KErCR1Ql8M-2DwSmPfB1Q1NMz9Kakmjb4FWPNCIa7UN_m9bYrU72lSuFZDMDPju_Dyvyx3_emT9VfaDjuScYQGhpz0CSty-aRvFGz3WF9FRwkTFsscI3K6XlZiiKrsZ3bH1LokL8Crr7hhnwrw7Moq-J_3yc_cFsCQ"
+      DATABASE_URL: postgres://postgres:@postgres:5432/postgres
+      PORT: "8080"
+    ports:
+    - "8000:8080"
+volumes:
+  db_data:
