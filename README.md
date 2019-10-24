@@ -78,4 +78,4 @@ Exercises:
 -->
 
 ## 2. Integrating a GraphQL API into your app 
-
+https://learn.hasura.io/graphql/react/introduction
